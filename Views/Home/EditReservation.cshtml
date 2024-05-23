@@ -1,0 +1,164 @@
+@model DreamParadise.Models.Reservation
+@{
+    ViewData["Title"] = "Edit Reservation";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+    <div class="container vh-50 d-flex flex-column justify-content-center">
+        <h1 class="text-center text-black mb-4">@ViewData["Title"]</h1>
+        <div class="bg-white p-4 rounded shadow">
+            <form method="post" asp-action="UpdateReservation">
+                <input type="hidden" asp-for="ReservationId" />
+                <div class="form-group">
+                    <label asp-for="CheckIn">Check In:</label>
+                    <input id="CheckIn" asp-for="CheckIn" class="form-control" required>
+                    <span asp-validation-for="CheckIn" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CheckOut">Check Out:</label>
+                    <input id="CheckOut" asp-for="CheckOut" class="form-control" required>
+                    <span asp-validation-for="CheckOut" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label>Adults:</label>
+                    <select id="AdultsCount" asp-for="AdultsCount" class="form-control" required onchange="updateRoomOptions()">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            <option value="@i">@i</option>
+                        }
+                    </select>
+                    <span asp-validation-for="AdultsCount" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label>Children:</label>
+                    <select id="ChildCount" asp-for="ChildCount" class="form-control" required onchange="updateRoomOptions()">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3 or more</option>
+                    </select>
+                    <span asp-validation-for="ChildCount" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="RoomType">Room Type:</label>
+                    <select id="roomTypeSelect" asp-for="RoomType" class="form-control" required>
+                        <option value="Single">Single</option>
+                        <option value="Double">Double</option>
+                        <option value="Suite">Suite</option>
+                    </select>
+                    <span asp-validation-for="RoomType" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="TotalPrice">Total Price:</label>
+                    <input id="TotalPrice" asp-for="TotalPrice" class="form-control" readonly>
+                    <span asp-validation-for="TotalPrice" class="text-danger"></span>
+                </div>
+                <button type="submit" class="btn btn-primary">Update</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            updateRoomOptions(); // Initial update on page load
+            updatePrice(); // Initial price calculation
+
+            // Add event listeners to date inputs
+            document.getElementById("CheckIn").addEventListener('change', updatePrice);
+            document.getElementById("CheckOut").addEventListener('change', updatePrice);
+        });
+
+        function updateRoomOptions() {
+            var adultsCount = parseInt(document.getElementById("AdultsCount").value) || 1;
+            var childCount = parseInt(document.getElementById("ChildCount").value) || 0;
+            var totalGuests = adultsCount + childCount;
+            var roomTypeSelect = document.getElementById("roomTypeSelect");
+
+            // Hide options based on total guests
+            roomTypeSelect.querySelectorAll('option').forEach(function(option) {
+                switch (option.value) {
+                    case 'Single':
+                        if (totalGuests > 1) {
+                            option.style.display = 'none';
+                        } else {
+                            option.style.display = 'block';
+                        }
+                        break;
+                    case 'Double':
+                        if (totalGuests > 2) {
+                            option.style.display = 'none';
+                        } else {
+                            option.style.display = 'block';
+                        }
+                        break;
+                    case 'Suite':
+                        if (totalGuests > 5) {
+                            option.style.display = 'none';
+                        } else {
+                            option.style.display = 'block';
+                        }
+                        break;
+                    default:
+                        option.style.display = 'block';
+                        break;
+                }
+            });
+
+            // Select the first available room type
+            var firstAvailableOption = roomTypeSelect.querySelector('option:not([style="display: none;"])');
+            if (firstAvailableOption) {
+                firstAvailableOption.selected = true;
+                updatePrice(); // Calculate price immediately after selecting the first available option
+            }
+        }
+
+        function updatePrice() {
+            var roomType = document.getElementById("roomTypeSelect").value;
+            var childCount = parseInt(document.getElementById("ChildCount").value) || 0;
+            var checkInDate = new Date(document.getElementById("CheckIn").value);
+            var checkOutDate = new Date(document.getElementById("CheckOut").value);
+            var roomPrice = 0;
+
+            switch (roomType) {
+                case "Single":
+                    roomPrice = 120;
+                    break;
+                case "Double":
+                    roomPrice = 210;
+                    break;
+                case "Suite":
+                    roomPrice = 250;
+                    break;
+            }
+
+            // Add additional charges for children
+            if (childCount === 1) {
+                roomPrice += 30;
+            } else if (childCount === 2) {
+                roomPrice += 70;
+            } else if (childCount >= 3) {
+                roomPrice += 100;
+            }
+
+            // Calculate the number of days
+            var timeDiff = checkOutDate - checkInDate;
+            var daysCount = Math.ceil(timeDiff / (1000 * 3600 * 24));
+            if (daysCount < 1) {
+                daysCount = 1; // Ensure at least one day is charged
+            }
+
+            // Calculate total price
+            var totalPrice = roomPrice * daysCount;
+            document.getElementById("TotalPrice").value = totalPrice;
+        }
+    </script>
+</body>
+</html>

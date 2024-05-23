@@ -1,0 +1,73 @@
+﻿﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - DreamParadise</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    @* <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" /> *@
+    <link rel="stylesheet" href="~/DreamParadise.styles.css" asp-append-version="true" />
+     <!-- Bootstrap core CSS -->
+        <link href="~/css/bootstrap.min.css" rel="stylesheet">
+        <link href="~/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+        <!-- Custom styles for this template -->
+        <link href="~/css/style.css" rel="stylesheet">
+        <link href="~/fonts/antonio-exotic/stylesheet.css" rel="stylesheet">
+        <link rel="~/stylesheet" href="css/lightbox.min.css">
+        <link href="~/css/responsive.css" rel="stylesheet">
+        <script src="~/js/jquery.min.js" type="text/javascript"></script>
+        <script src="~/js/bootstrap.min.js" type="text/javascript"></script>
+        <script src="~/js/lightbox-plus-jquery.min.js" type="text/javascript"></script>
+        <script src="~/js/instafeed.min.js" type="text/javascript"></script>
+        <script src="~/js/custom.js" type="text/javascript"></script>
+</head>
+<body>
+<header class="header" data-header>
+    <div class="container">
+        <a  asp-action="Index" class="active navbar-link hover-underline" data-hover="Home">
+            <img src="#" width="160" height="50" alt="Dream Paradise">
+        </a>
+        <nav class="navbar" data-navbar>
+
+            <ul class="navbar-list">
+                <li class="navbar-item"><a class="navbar-link hover-underline" asp-controller="Home" asp-action="About"><span>About</span></a></li>
+                <li class="navbar-item"><a class="navbar-link hover-underline" asp-controller="Home" asp-action="Rooms"> <span>Rooms</span> </a></li>
+                <li class="navbar-item"><a class="navbar-link hover-underline" asp-controller="Home" asp-action="Reservations"><span>Reservations</span></a></li>  
+                <li class="navbar-item"><a class="navbar-link hover-underline" asp-controller="Home" asp-action="ContactUs"> <span>Contact Us</span> </a> </li>
+                <li class="navbar-item"><a class="navbar-link hover-underline" asp-controller="LogReg" asp-action="LogReg"><span>Login</span> </a></li>
+                <li><a asp-action="Booking" asp-controller="Home"><button type="button" class="btn btn-secondary">Book Now</button></a></li>
+
+                <form asp-action="Logout" asp-controller="Home" method="get">
+                <button type="submit" class="btn btn-secondary">Logout</button>
+               </form>   
+            </ul>
+
+            <a class="navbar-link hover-underline" asp-controller="Home" asp-action="Booking">
+                <button type="button" class="book-now-btn">Book Now</button>
+            </a>
+        </nav>
+
+        <button class="nav-open-btn" aria-label="open menu" data-nav-toggler>
+            <span class="line line-1"></span>
+            <span class="line line-2"></span>
+            <span class="line line-3"></span>
+        </button>
+
+        <div class="overlay" data-nav-toggler data-overlay></div>
+    </div>
+</header>
+
+<div class="container-fluid">
+    <main role="main" class="pb">
+        @RenderBody()
+    </main>
+</div>
+
+<!-- Scripts -->
+<script src="~/js/script.js" asp-append-version="true"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

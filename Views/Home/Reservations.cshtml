@@ -1,0 +1,75 @@
+@model IEnumerable<DreamParadise.Models.Reservation>
+@{
+    ViewData["Title"] = "Reservations";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="text-center">
+            <h1>Your total reservations in our hotel is:  @Model.Count()</h1>
+        </div>
+        <br>
+        <table class="table table-bordered table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>User</th>
+                    <th>Check In</th>
+                    <th>Check Out</th>
+                    <th>Adults Count</th>
+                    <th>Child Count</th>
+                    <th>Room Type</th>
+                    <th>Total Price</th>
+                    <th>Created At</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var reservation in Model)
+                {
+                    <tr>
+                        <td>@reservation.UserWhoReserved?.FirstName @reservation.UserWhoReserved?.LastName</td>
+                        <td>@reservation.CheckIn.ToString("yyyy-MM-dd")</td>
+                        <td>@reservation.CheckOut.ToString("yyyy-MM-dd")</td>
+                        <td>@reservation.AdultsCount</td>
+                        <td>@reservation.ChildCount</td>
+                        <td>@reservation.RoomType</td>
+                        <td>@reservation.TotalPrice dt </td>
+                        <td>@reservation.UpdatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                        
+                        
+                        
+                       <td>
+                            <form asp-action="EditReservation" asp-controller="Home" method="get" class="d-inline">
+                                <input type="hidden" name="id" value="@reservation.ReservationId" />
+                                <button type="submit" class="btn btn-warning btn-sm">Edit</button>
+                            </form>
+                            <form asp-action="DeleteReservation" asp-controller="Home" method="post" class="d-inline">
+                                <input type="hidden" name="id" value="@reservation.ReservationId" />
+                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        </td>
+
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="text-center mt-3">
+            <h4>Dream Paradise Total Reservations Record : @ViewBag.TotalReservationsCount</h4>
+        </div>
+         
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
